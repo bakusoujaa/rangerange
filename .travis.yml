@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - 13
+  - 14
+  - 15
+  - node
+dist: trusty
+sudo: false
+cache: yarn
+script: yarn test
