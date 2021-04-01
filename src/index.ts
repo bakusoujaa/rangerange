@@ -1,24 +1,10 @@
-const numberCompareFunc = (base: number, other: number) => {
-  if (base < other) { return -1 }
-  if (base === other) { return 0 }
-  if (base > other) { return 1 }
-}
-const numberSucc = (current: number) => {
-  if (current % 1 !== 0) { throw new Error('float could not iterate.') }
-  return current + 1
-}
+import TypeConfigs from './TypeConfigs'
+import ITypeConfig from './TypeConfigs/ITypeConfig'
 
 export default class Rangerange<T> {
-  private static types = [
-    { name: "number", compareFunc: numberCompareFunc, succFunc: numberSucc }
-  ]
-  // public static register = (params: any) => {
-
-  // }
-
   private readonly minimum?: T
   private readonly maximum?: T
-  private readonly typeConfig: any
+  private readonly typeConfig: ITypeConfig<T>
 
   constructor(params: { minimum?: T, maximum?: T }) {
 
@@ -38,6 +24,7 @@ export default class Rangerange<T> {
     if (!this.minimum || !this.maximum) {
       throw new Error('from and to must be present.')
     }
+    if (!this.typeConfig.succFunc) { throw new Error('typeConfig.succFunc must be exest.') }
 
     let ary = []
     for (let i = this.minimum; this.typeConfig.compareFunc(i, this.maximum) <= 0; i = this.typeConfig.succFunc(i)) {
@@ -51,10 +38,6 @@ export default class Rangerange<T> {
   }
 
   private getTypeConfig = (value?: T) => {
-    const config = Rangerange.types.find((type) => {
-      return this.getType(value) === type.name
-    })
-    if (!config) { throw new Error('unregistered type.') }
-    return config
+    return TypeConfigs.get(this.getType(value))
   }
 }
