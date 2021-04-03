@@ -1,4 +1,10 @@
-import ITypeConfig from './ITypeConfig'
+import IRegisterTypeConfig from './IRegisterTypeConfig'
+
+const typeMatchFunc = (value: unknown) => {
+  if (typeof value !== 'string') { return false }
+
+  return value.length === 1
+}
 
 const compareFunc = (base: string, other: string) => {
   if (base.length !== 1) { throw new Error('char must be 1 length.') }
@@ -7,13 +13,16 @@ const compareFunc = (base: string, other: string) => {
   if (base.charCodeAt(0) < other.charCodeAt(0)) { return -1 }
   if (base.charCodeAt(0) === other.charCodeAt(0)) { return 0 }
   if (base.charCodeAt(0) > other.charCodeAt(0)) { return 1 }
+
   throw new Error('unknown char code.')
 }
-const succFunc = (current: string) => {
+
+const stepBy = (current: string, step: number) => {
   if (current.length !== 1) { throw new Error('char must be 1 length.') }
-  return String.fromCodePoint(current.charCodeAt(0) + 1)
+
+  return String.fromCodePoint(current.charCodeAt(0) + step)
 }
 
-const config: ITypeConfig<string> = { name: "string", compareFunc, succFunc }
+const config: IRegisterTypeConfig<string> = { typeMatchFunc, compareFunc, stepBy }
 
 export default config

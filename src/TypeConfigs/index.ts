@@ -1,9 +1,9 @@
-import ITypeConfig from './ITypeConfig'
+import IRegisterTypeConfig from './IRegisterTypeConfig'
 import Integer from './Integer'
 import Char from './Char'
 
 export default class TypeConfigs {
-  private static configs: ITypeConfig<any>[] = [
+  private static configs: IRegisterTypeConfig<any>[] = [
     Integer,
     Char,
   ]
@@ -12,16 +12,16 @@ export default class TypeConfigs {
     return TypeConfigs.configs
   }
 
-  public static get = (name: string) => {
+  public static get = (value: unknown) => {
     const config = TypeConfigs.configs.find((config) =>{
-      return config.name === name
+      return config.typeMatchFunc(value)
     })
     if (!config) { throw new Error('type config could not found.') }
 
     return config
   }
 
-  public static register = <T>(config: ITypeConfig<T>) => {
+  public static register = <T>(config: IRegisterTypeConfig<T>) => {
     TypeConfigs.configs.push(config)
   }
 }
